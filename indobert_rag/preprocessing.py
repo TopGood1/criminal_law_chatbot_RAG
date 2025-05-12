@@ -29,7 +29,7 @@ def split_per_pasal(text):
     return pasal_list
 
 if __name__ == "__main__":
-    # Tentukan path PDF relatif dari posisi script ini
+    # Lokasi file pdf
     base_dir = os.path.dirname(os.path.abspath(__file__))
     pdf_path = os.path.join(base_dir, "dataset", "KUHP_2023.pdf")
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     print(f"📦 Total pasal diproses: {len(pasal_list)}")
 
-    # Simpan hasil ke file
+    # Menyimpan hasil
     output_file = os.path.join(base_dir, "pasal_list.pkl")
     with open(output_file, "wb") as f:
         pickle.dump(pasal_list, f)

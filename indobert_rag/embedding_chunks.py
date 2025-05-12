@@ -3,7 +3,7 @@ from sentence_transformers import SentenceTransformer
 import pickle
 
 # Inisialisasi client dan model
-client = chromadb.PersistentClient(path="db_chroma")  # Memastikan path yang sama dengan retrieval_chat.py
+client = chromadb.PersistentClient(path="db_chroma")
 model = SentenceTransformer("indobenchmark/indobert-base-p1")  # Load model sekali
 
 def load_pasal_list(pickle_path="pasal_list.pkl"):
