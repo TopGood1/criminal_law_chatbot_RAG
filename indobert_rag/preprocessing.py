@@ -21,20 +21,19 @@ def split_per_pasal(text):
     
     pasal_list = []
     for i in range(1, len(split_text), 2):
-        pasal = split_text[i] + " " + split_text[i + 1] if i + 1 < len(split_text) else split_text[i]
-        pasal = pasal.strip()
-        if len(pasal) > 30:
-            pasal_list.append(pasal)
+        nomor = split_text[i].strip()
+        isi = split_text[i + 1].strip() if i + 1 < len(split_text) else ""
+        if len(isi) > 30:
+            pasal_list.append({"nomor": nomor, "isi": isi})
     
     return pasal_list
 
 if __name__ == "__main__":
-    # Lokasi file pdf
     base_dir = os.path.dirname(os.path.abspath(__file__))
     pdf_path = os.path.join(base_dir, "dataset", "KUHP_2023.pdf")
 
     print(f"📂 Membaca PDF dari: {pdf_path}")
-    raw_text = extract_text_from_pdf("D:\Study Project Code\Tugas Akhir\indobert_rag\dataset\KUHP_2023.pdf")
+    raw_text = extract_text_from_pdf(pdf_path)
 
     print("🧹 Membersihkan teks...")
     clean_text = bersihkan_teks(raw_text)
@@ -44,7 +43,6 @@ if __name__ == "__main__":
 
     print(f"📦 Total pasal diproses: {len(pasal_list)}")
 
-    # Menyimpan hasil
     output_file = os.path.join(base_dir, "pasal_list.pkl")
     with open(output_file, "wb") as f:
         pickle.dump(pasal_list, f)

@@ -2,33 +2,30 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 import pickle
 
-# Inisialisasi client dan model
 client = chromadb.PersistentClient(path="db_chroma")
-model = SentenceTransformer("indobenchmark/indobert-base-p1")  # Load model sekali
+model = SentenceTransformer("indobenchmark/indobert-base-p1")
 
 def load_pasal_list(pickle_path="pasal_list.pkl"):
-    """Memuat ulang pasal dari pickle file"""
     with open(pickle_path, "rb") as f:
         return pickle.load(f)
 
 def simpan_ke_chroma(pasal_list, collection_name="kuhp2023"):
-    """Menyimpan embedding pasal ke dalam ChromaDB"""
-    
-    # Hapus koleksi jika sudah ada
     if collection_name in [col.name for col in client.list_collections()]:
         client.delete_collection(name=collection_name)
 
-    # Membuat koleksi baru
     collection = client.create_collection(name=collection_name)
 
     print("🧠 Membuat embedding IndoBERT...")
 
     for i, pasal in enumerate(pasal_list):
-        # Menambahkan dokumen dengan embedding ke ChromaDB
-        embedding = model.encode(pasal).tolist()
+        nomor = pasal["nomor"]
+        isi = pasal["isi"]
+        full_text = f"{nomor}\n{isi}".lower().strip()
+        embedding = model.encode(full_text).tolist()
+
         collection.add(
-            documents=[pasal],
-            metadatas=[{"source": f"pasal_{i}"}],
+            documents=[isi],
+            metadatas=[{"source": f"pasal_{i}", "nomor": nomor}],
             ids=[str(i)],
             embeddings=[embedding]
         )
